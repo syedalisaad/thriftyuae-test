@@ -6,3 +6,7 @@ export interface Field {
   icon?: React.ReactNode;
   required?: boolean;
 }
+export interface ValidationError {
+  field: string;
+  message: string;
+}

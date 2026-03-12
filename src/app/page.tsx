@@ -5,19 +5,18 @@ import { ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { InputField } from "./components/InputField";
 import BookingDiliveryForm from "./components/BookingDilivery";
-import { Field } from "./lib/types/booking";
+import { Field, ValidationError } from "./lib/types/booking";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<string>("Start Booking");
   const [isDiliver, setIsDiliver] = useState<boolean>(false);
-  const [errors, setErrors] = useState<string[]>([]);
+const [errors, setErrors] = useState<ValidationError[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const tabs: string[] = [
     "Start Booking",
     "Monthly Specials",
     "Personal Leasing",
   ];
-
   const handleTabChange = (tab: string) => {
     if (tab === "Personal Leasing") {
       window.location.href = "https://pl.thriftyuae.com/";
@@ -71,41 +70,39 @@ export default function Home() {
     return [];
   };
 
- const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  setLoading(true);
-  setErrors([]);
+  const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    setErrors([]);
 
-  const formData = new FormData(e.currentTarget);
-  
-  // Convert FormData to a plain object for the JSON body
-  const bodyData = Object.fromEntries(formData.entries());
+    const formData = new FormData(e.currentTarget);
 
-  try {
-    const response = await fetch("/api/search", {
-      method: "POST", // Changed to POST
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(bodyData), // Sending as JSON
-    });
+    // Convert FormData to a plain object for the JSON body
+    const bodyData = Object.fromEntries(formData.entries());
 
-    const data = await response.json();
+    try {
+      const response = await fetch("/api/search", {
+        method: "POST", // Changed to POST
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bodyData), // Sending as JSON
+      });
 
-    if (!response.ok) {
-      if (data.requiredFields) {
-        setErrors(data.requiredFields);
+      const data = await response.json();
+
+      if (data.success === false) {
+        if (data.errors) {
+          setErrors(data.errors);
+        }
+        return;
       }
-      return;
+    } catch (err) {
+      console.error("Connection error:", err);
+    } finally {
+      setLoading(false);
     }
-
-    console.log("Success! Results:", data.results);
-  } catch (err) {
-    console.error("Connection error:", err);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <div
@@ -133,6 +130,17 @@ export default function Home() {
             </button>
           ))}
         </div>
+   {errors.length > 0 && (
+  <div className="mx-8 mt-6 p-3 bg-[#fdf2f2] border border-[#f8d7da] rounded-sm transition-all animate-in fade-in slide-in-from-top-2">
+    {errors.map((error, index) => (
+      <p key={index} className="text-[#a94442] text-[13px] font-medium flex items-center gap-2">
+        {/* Bullet point or icon to separate multiple errors */}
+        <span className="w-1 h-1 bg-[#a94442] rounded-full inline-block" />
+        {error.message}
+      </p>
+    ))}
+  </div>
+)}
         <form onSubmit={handleSearch}>
           {!isDiliver ? (
             <>

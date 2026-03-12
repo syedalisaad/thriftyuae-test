@@ -14,7 +14,7 @@ export default function BookingDiliveryForm({ onBack, activeTab }: Props) {
   const [returnLocation, setReturnLocation] = useState("same");
 
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-gray-50/50 rounded-lg font-sans ">
+    <div className="max-w-6xl mx-auto p-6 rounded-lg font-sans ">
       <div className="mb-6">
         <button
           onClick={onBack}
