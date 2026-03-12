@@ -5,14 +5,7 @@ import { ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { InputField } from "./components/InputField";
 import BookingDiliveryForm from "./components/BookingDilivery";
-
-interface BookingField {
-  label: string;
-  type: "select" | "date" | "time";
-  val?: string;
-  icon?: React.ReactNode;
-  required?: boolean;
-}
+import { Field } from "./lib/types/booking";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<string>("Start Booking");
@@ -24,8 +17,17 @@ export default function Home() {
     "Personal Leasing",
   ];
 
-  const getFields = (): BookingField[] => {
-    const baseFields: BookingField[] = [
+  const handleTabChange = (tab: string) => {
+    if (tab === "Personal Leasing") {
+      window.location.href = "https://pl.thriftyuae.com/";
+      return;
+    }
+
+    setActiveTab(tab);
+  };
+
+  const getFields = (): Field[] => {
+    const baseFields: Field[] = [
       { label: "Pick Up City", type: "select", required: true },
       { label: "Pick Up Location", type: "select", required: true },
       {
@@ -40,27 +42,31 @@ export default function Home() {
       },
     ];
 
-    if (activeTab === "Monthly Specials") {
-      return [...baseFields];
+    if (activeTab === "Start Booking") {
+      return [
+        ...baseFields,
+        { label: "Drop Off City", type: "select", required: true },
+        { label: "Drop Off Location", type: "select" },
+        {
+          label: "Drop Off Date",
+          type: "date",
+          val: "03/15/2026",
+          required: true,
+        },
+        {
+          label: "Drop Off Time",
+          type: "time",
+          val: "08:00 AM",
+          required: true,
+        },
+      ];
     }
 
-    return [
-      ...baseFields,
-      { label: "Drop Off City", type: "select", required: true },
-      { label: "Drop Off Location", type: "select" },
-      {
-        label: "Drop Off Date",
-        type: "date",
-        val: "03/15/2026",
-        required: true,
-      },
-      {
-        label: "Drop Off Time",
-        type: "time",
-        val: "08:00 AM",
-        required: true,
-      },
-    ];
+    if (activeTab === "Monthly Specials") {
+      return baseFields;
+    }
+
+    return [];
   };
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
@@ -71,17 +77,18 @@ export default function Home() {
   return (
     <div
       className="relative min-h-screen w-full bg-cover bg-center flex items-center justify-center p-4"
-      style={{ backgroundImage: "url('/home-page-banner.webp')" }}
+      style={{
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/home-page-banner.webp')`,
+      }}
     >
-      <div className="w-full max-w-5xl bg-white/95 shadow-2xl overflow-hidden rounded-sm">
-
-        {/* Tabs */}
+      <div className="w-full max-w-5xl bg-white/70 backdrop-blur-md shadow-2xl overflow-hidden rounded-sm border border-white/20 ">
+        {" "}
         <div className="flex w-full">
           {tabs.map((tab) => (
             <button
               key={tab}
               type="button"
-              onClick={() => setActiveTab(tab)}
+              onClick={() => handleTabChange(tab)}
               className={`flex-1 py-4 text-center font-bold transition-colors 
               border-l-[0.5px] border-gray-300/40 first:border-l-0 ${
                 activeTab === tab
@@ -93,18 +100,15 @@ export default function Home() {
             </button>
           ))}
         </div>
-
         <form onSubmit={handleSearch}>
           {!isDiliver ? (
             <>
-              {/* Fields */}
-              <div className="p-8 grid grid-cols-1 md:grid-cols-4 gap-6">
+              <div className="p-8 grid grid-cols-1 md:grid-cols-4 gap-6 ">
                 {getFields().map((field, idx) => (
                   <InputField key={idx} field={field} />
                 ))}
               </div>
 
-              {/* Deliver button */}
               <div className="px-8 pb-6 flex flex-col md:flex-row justify-between items-center gap-4">
                 <button
                   type="button"
@@ -129,7 +133,6 @@ export default function Home() {
                   </span>
                 </button>
 
-                {/* Search button */}
                 <button
                   type="submit"
                   className="bg-[#1e56a0] text-white px-6 py-2 font-bold uppercase tracking-wider hover:bg-[#16427d] transition-all rounded-sm shadow-md active:scale-95"
@@ -145,7 +148,6 @@ export default function Home() {
             />
           )}
         </form>
-
       </div>
     </div>
   );

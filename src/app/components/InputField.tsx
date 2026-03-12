@@ -10,34 +10,48 @@ export const InputField: React.FC<Props> = ({ field }) => {
   const fieldName = field.label.replace(/\s+/g, "_").toLowerCase();
 
   return (
-    <div className="space-y-2">
-      <label className="text-xs font-bold uppercase text-gray-700">
+    <div className="space-y-2 relative">
+      <label className="text-xs font-bold capitalize text-gray-900">
         {field.label}
       </label>
 
       <div className="relative">
         {field.type === "select" ? (
-          <select
-            name={fieldName}
-            defaultValue={field.val}
-            className="w-full p-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-          >
-            <option value="">Select</option>
-          </select>
+          <div className="relative">
+            <select
+              name={field.label}
+              className="w-full p-2.5 h-[38px] border border-gray-300 rounded-md text-sm bg-white appearance-none pr-10 focus:outline-none transition-colors"
+            >
+              <option value="">Select</option>
+            </select>
 
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="text-gray-800"
+              >
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </div>
+          </div>
         ) : field.type === "time" ? (
-          <TimePicker
-            defaultValue={field.val}
-            name={fieldName}
-          />
-
+          <div className="relative z-[50]">
+          <TimePicker defaultValue={field.val} name={fieldName} />
+          </div>
         ) : (
-          <>
+          <div className="relative">
             <input
               name={fieldName}
               type={field.type}
               defaultValue={field.val}
-              className="w-full p-2 border border-gray-300 rounded text-sm pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-2 border border-gray-300 rounded text-sm pr-10 focus:outline-none  bg-white"
             />
 
             {field.icon && (
@@ -45,10 +59,9 @@ export const InputField: React.FC<Props> = ({ field }) => {
                 {field.icon}
               </span>
             )}
-          </>
+          </div>
         )}
       </div>
     </div>
   );
 };
-
