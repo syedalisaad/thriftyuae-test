@@ -7,7 +7,9 @@ interface Props {
 }
 
 export const InputField: React.FC<Props> = ({ field }) => {
-  const fieldName = field.label.replace(/\s+/g, "_").toLowerCase();
+  const fieldName = field.name
+    ? field.name
+    : field.label.replace(/\s+/g, "_").toLowerCase();
 
   return (
     <div className="space-y-2 relative">
@@ -19,7 +21,7 @@ export const InputField: React.FC<Props> = ({ field }) => {
         {field.type === "select" ? (
           <div className="relative">
             <select
-              name={field.label}
+              name={fieldName}
               className="w-full p-2.5 h-[38px] border border-gray-300 rounded-md text-sm bg-white appearance-none pr-10 focus:outline-none transition-colors"
             >
               <option value="">Select</option>
@@ -42,9 +44,7 @@ export const InputField: React.FC<Props> = ({ field }) => {
             </div>
           </div>
         ) : field.type === "time" ? (
-          <div className="relative z-[50]">
           <TimePicker defaultValue={field.val} name={fieldName} />
-          </div>
         ) : (
           <div className="relative">
             <input

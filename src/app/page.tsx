@@ -10,7 +10,8 @@ import { Field } from "./lib/types/booking";
 export default function Home() {
   const [activeTab, setActiveTab] = useState<string>("Start Booking");
   const [isDiliver, setIsDiliver] = useState<boolean>(false);
-
+  const [errors, setErrors] = useState<string[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const tabs: string[] = [
     "Start Booking",
     "Monthly Specials",
@@ -57,6 +58,7 @@ export default function Home() {
           label: "Drop Off Time",
           type: "time",
           val: "08:00 AM",
+          name: "drop_off_time",
           required: true,
         },
       ];
@@ -69,10 +71,41 @@ export default function Home() {
     return [];
   };
 
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log(`Searching for: ${activeTab}`);
-  };
+ const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  setLoading(true);
+  setErrors([]);
+
+  const formData = new FormData(e.currentTarget);
+  
+  // Convert FormData to a plain object for the JSON body
+  const bodyData = Object.fromEntries(formData.entries());
+
+  try {
+    const response = await fetch("/api/search", {
+      method: "POST", // Changed to POST
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(bodyData), // Sending as JSON
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      if (data.requiredFields) {
+        setErrors(data.requiredFields);
+      }
+      return;
+    }
+
+    console.log("Success! Results:", data.results);
+  } catch (err) {
+    console.error("Connection error:", err);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div
@@ -81,7 +114,7 @@ export default function Home() {
         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/home-page-banner.webp')`,
       }}
     >
-      <div className="w-full max-w-5xl bg-white/70 backdrop-blur-md shadow-2xl overflow-hidden rounded-sm border border-white/20 ">
+      <div className="w-full  max-w-5xl bg-white/70 backdrop-blur-md shadow-2xl overflow-hidden rounded-sm border border-white/20 ">
         {" "}
         <div className="flex w-full">
           {tabs.map((tab) => (
@@ -103,7 +136,7 @@ export default function Home() {
         <form onSubmit={handleSearch}>
           {!isDiliver ? (
             <>
-              <div className="p-8 grid grid-cols-1 md:grid-cols-4 gap-6 ">
+              <div className="p-8 grid grid-cols-1 md:grid-cols-4 gap-6 relative">
                 {getFields().map((field, idx) => (
                   <InputField key={idx} field={field} />
                 ))}

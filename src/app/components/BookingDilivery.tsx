@@ -136,6 +136,7 @@ export default function BookingDiliveryForm({ onBack, activeTab }: Props) {
                       label: "Collection Date",
                       type: "date",
                       val: "2026-03-15",
+                      name: "collection_date",
                       required: true,
                       icon: <Calendar size={18} />,
                     }}
@@ -144,6 +145,7 @@ export default function BookingDiliveryForm({ onBack, activeTab }: Props) {
                     field={{
                       label: "Collection Time",
                       type: "time",
+                      name: "collection_time",
                       val: "08:00 AM",
                       required: true,
                     }}
