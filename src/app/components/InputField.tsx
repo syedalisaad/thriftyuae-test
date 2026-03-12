@@ -51,7 +51,8 @@ export const InputField: React.FC<Props> = ({ field }) => {
               name={fieldName}
               type={field.type}
               defaultValue={field.val}
-              className="w-full p-2 border border-gray-300 rounded text-sm pr-10 focus:outline-none  bg-white"
+              placeholder={field?.placeholder}
+              className="w-full p-2 h-[38px] border border-gray-300 rounded text-sm pr-10 focus:outline-none  bg-white"
             />
 
             {field.icon && (

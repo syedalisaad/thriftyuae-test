@@ -5,6 +5,7 @@ export interface Field {
   name?: string;
   icon?: React.ReactNode;
   required?: boolean;
+  placeholder?: string;
 }
 export interface ValidationError {
   field: string;

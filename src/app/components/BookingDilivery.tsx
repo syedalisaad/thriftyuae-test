@@ -45,6 +45,7 @@ export default function BookingDiliveryForm({ onBack, activeTab }: Props) {
               label: "Delivery Address",
               type: "text",
               val: "",
+              placeholder: "Type here",
               required: false,
             }}
           />
@@ -129,28 +130,76 @@ export default function BookingDiliveryForm({ onBack, activeTab }: Props) {
                     Specify Location
                   </label>
                 </div>
+                {returnLocation === "same" ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <InputField
+                      field={{
+                        label: "Collection Date",
+                        type: "date",
+                        val: "2026-03-15",
+                        name: "collection_date",
+                        required: true,
+                      }}
+                    />
+                    <InputField
+                      field={{
+                        label: "Collection Time",
+                        type: "time",
+                        name: "collection_time",
+                        val: "08:00 AM",
+                        required: true,
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <InputField
+                        field={{
+                          label: "Collection City",
+                          type: "select",
+                          required: true,
+                        }}
+                      />
+                      <InputField
+                        field={{
+                          label: "Collection Area",
+                          type: "select",
+                          required: true,
+                        }}
+                      />
+                      <InputField
+                        field={{
+                          label: "Collection Address",
+                          type: "text",
+                          placeholder: "Type here",
+                          required: true,
+                        }}
+                      />
+                    </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <InputField
-                    field={{
-                      label: "Collection Date",
-                      type: "date",
-                      val: "2026-03-15",
-                      name: "collection_date",
-                      required: true,
-                      icon: <Calendar size={18} />,
-                    }}
-                  />
-                  <InputField
-                    field={{
-                      label: "Collection Time",
-                      type: "time",
-                      name: "collection_time",
-                      val: "08:00 AM",
-                      required: true,
-                    }}
-                  />
-                </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <InputField
+                        field={{
+                          label: "Collection Date",
+                          type: "date",
+                          val: "2026-03-15",
+                          name: "collection_date",
+                          required: true,
+                        }}
+                      />
+                      <InputField
+                        field={{
+                          label: "Collection Time",
+                          type: "time",
+                          name: "collection_time",
+                          val: "08:00 AM",
+                          required: true,
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
               <div className=" rounded-md space-y-6">

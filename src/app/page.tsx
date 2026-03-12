@@ -10,7 +10,7 @@ import { Field, ValidationError } from "./lib/types/booking";
 export default function Home() {
   const [activeTab, setActiveTab] = useState<string>("Start Booking");
   const [isDiliver, setIsDiliver] = useState<boolean>(false);
-const [errors, setErrors] = useState<ValidationError[]>([]);
+  const [errors, setErrors] = useState<ValidationError[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const tabs: string[] = [
     "Start Booking",
@@ -130,17 +130,19 @@ const [errors, setErrors] = useState<ValidationError[]>([]);
             </button>
           ))}
         </div>
-   {errors.length > 0 && (
-  <div className="mx-8 mt-6 p-3 bg-[#fdf2f2] border border-[#f8d7da] rounded-sm transition-all animate-in fade-in slide-in-from-top-2">
-    {errors.map((error, index) => (
-      <p key={index} className="text-[#a94442] text-[13px] font-medium flex items-center gap-2">
-        {/* Bullet point or icon to separate multiple errors */}
-        <span className="w-1 h-1 bg-[#a94442] rounded-full inline-block" />
-        {error.message}
-      </p>
-    ))}
-  </div>
-)}
+        {errors.length > 0 && (
+          <div className="mx-8 mt-6 p-3 bg-[#fdf2f2] border border-[#f8d7da] rounded-sm transition-all animate-in fade-in slide-in-from-top-2">
+            {errors.map((error, index) => (
+              <p
+                key={index}
+                className="text-[#a94442] text-[13px] font-medium flex items-center gap-2"
+              >
+                <span className="w-1 h-1 bg-[#a94442] rounded-full inline-block" />
+                {error.message}
+              </p>
+            ))}
+          </div>
+        )}
         <form onSubmit={handleSearch}>
           {!isDiliver ? (
             <>
