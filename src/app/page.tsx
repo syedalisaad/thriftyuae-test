@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { InputField } from "./components/InputField";
@@ -12,6 +12,23 @@ export default function Home() {
   const [isDeliver, setIsDeliver] = useState<boolean>(false);
   const [errors, setErrors] = useState<ValidationError[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+
+  const [locationData, setLocationData] = useState<any[]>([]);
+const [selectedPickUpCity, setSelectedPickUpCity] = useState("");
+const [selectedDropOffCity, setSelectedDropOffCity] = useState("");
+
+useEffect(() => {
+  const fetchLocations = async () => {
+    try {
+      const res = await fetch('/api/v1/locations');
+      const json = await res.json();
+      if (json.success) setLocationData(json.data);
+    } catch (err) {
+      console.error("Failed to load locations", err);
+    }
+  };
+  fetchLocations();
+}, []);
   const tabs: string[] = [
     "Start Booking",
     "Monthly Specials",
@@ -27,9 +44,13 @@ export default function Home() {
   };
 
   const getFields = (): Field[] => {
+    const pickUpAreas = locationData.find(l => l.city === selectedPickUpCity)?.areas || [];
+  const dropOffAreas = locationData.find(l => l.city === selectedDropOffCity)?.areas || [];
     const baseFields: Field[] = [
-      { label: "Pick Up City", type: "select", required: true },
-      { label: "Pick Up Location", type: "select", required: true },
+      { label: "Pick Up City", type: "select", required: true,options: locationData.map(l => l.city), // Dynamic cities
+      onChange: (e: any) => setSelectedPickUpCity(e.target.value) },
+      { label: "Pick Up Location", type: "select", required: true ,name: "pick_up_location", 
+      options: pickUpAreas },
       {
         label: "Pick Up Date",
         type: "date",
@@ -45,8 +66,10 @@ export default function Home() {
     if (activeTab === "Start Booking") {
       return [
         ...baseFields,
-        { label: "Drop Off City", type: "select", required: true },
-        { label: "Drop Off Location", type: "select" },
+        { label: "Drop Off City", type: "select", required: true,options: locationData.map(l => l.city),
+        onChange: (e: any) => setSelectedDropOffCity(e.target.value) },
+        { label: "Drop Off Location", type: "select",name: "drop_off_location", 
+        options: dropOffAreas },
         {
           label: "Drop Off Date",
           type: "date",
@@ -77,16 +100,20 @@ export default function Home() {
 
     const formData = new FormData(e.currentTarget);
 
-    // Convert FormData to a plain object for the JSON body
     const bodyData = Object.fromEntries(formData.entries());
 
+    const finalPayload = {
+      ...bodyData,
+      activeTab: activeTab 
+    };
+
     try {
-      const response = await fetch("/api/search", {
-        method: "POST", // Changed to POST
+      const response = await fetch("/api/v1/search", {
+        method: "POST", 
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(bodyData), // Sending as JSON
+        body: JSON.stringify(finalPayload), 
       });
 
       const data = await response.json();

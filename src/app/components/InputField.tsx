@@ -22,9 +22,13 @@ export const InputField: React.FC<Props> = ({ field }) => {
           <div className="relative">
             <select
               name={fieldName}
+              onChange={field.onChange}
               className="w-full p-2.5 h-[38px] border border-gray-300 rounded-md text-sm bg-white appearance-none pr-10 focus:outline-none transition-colors"
             >
               <option value="">Select</option>
+              {field.options?.map((opt) => (
+            <option key={opt} value={opt}>{opt}</option>
+          ))}
             </select>
 
             <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
