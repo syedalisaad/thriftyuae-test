@@ -9,7 +9,7 @@ interface Props {
   activeTab: string;
 }
 
-export default function BookingDiliveryForm({ onBack, activeTab }: Props) {
+export default function BookingDeliveryForm({ onBack, activeTab }: Props) {
   const [returnType, setReturnType] = useState("collection");
   const [returnLocation, setReturnLocation] = useState("same");
 
@@ -33,13 +33,15 @@ export default function BookingDiliveryForm({ onBack, activeTab }: Props) {
       </div>
 
       <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <InputField
-            field={{ label: "Delivery City", type: "select", required: true }}
-          />
-          <InputField
-            field={{ label: "Delivery Area", type: "select", required: true }}
-          />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <InputField
+              field={{ label: "Delivery City", type: "select", required: true }}
+            />
+            <InputField
+              field={{ label: "Delivery Area", type: "select", required: true }}
+            />
+          </div>
           <InputField
             field={{
               label: "Delivery Address",
@@ -51,7 +53,7 @@ export default function BookingDiliveryForm({ onBack, activeTab }: Props) {
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
           <InputField
             field={{
               label: "Delivery Date",
@@ -131,7 +133,7 @@ export default function BookingDiliveryForm({ onBack, activeTab }: Props) {
                   </label>
                 </div>
                 {returnLocation === "same" ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 gap-4">
                     <InputField
                       field={{
                         label: "Collection Date",
@@ -153,21 +155,25 @@ export default function BookingDiliveryForm({ onBack, activeTab }: Props) {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <InputField
-                        field={{
-                          label: "Collection City",
-                          type: "select",
-                          required: true,
-                        }}
-                      />
-                      <InputField
-                        field={{
-                          label: "Collection Area",
-                          type: "select",
-                          required: true,
-                        }}
-                      />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {" "}
+                        <InputField
+                          field={{
+                            label: "Collection City",
+                            type: "select",
+                            required: true,
+                          }}
+                        />
+                        <InputField
+                          field={{
+                            label: "Collection Area",
+                            type: "select",
+                            required: true,
+                          }}
+                        />
+                      </div>
+
                       <InputField
                         field={{
                           label: "Collection Address",
@@ -178,7 +184,7 @@ export default function BookingDiliveryForm({ onBack, activeTab }: Props) {
                       />
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 sm:grid-cols-2 sm:grid-cols-2 gap-4">
                       <InputField
                         field={{
                           label: "Collection Date",
@@ -242,17 +248,26 @@ export default function BookingDiliveryForm({ onBack, activeTab }: Props) {
         )}
       </div>
 
-      <div className="mt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-        <p className="text-[14px] text-gray-600 font-medium leading-relaxed">
+      <div className="mt-8 grid grid-cols-10 items-center gap-2 border-t border-gray-300 pt-2">
+        <p className="col-span-7 text-[13px] md:text-[14px] text-gray-600 font-medium leading-tight text-left">
           *Additional charges for delivery and collection may apply.
         </p>
 
-        <button
-          type="submit"
-          className="bg-[#1e56a0] text-white px-10 py-3 font-bold tracking-wider hover:bg-[#16427d] transition-all rounded-sm shadow-md active:scale-95 whitespace-nowrap"
-        >
-          Search
-        </button>
+        <div className="col-span-3 flex justify-end">
+          <button
+            type="submit"
+            className="
+        w-full py-2 text-[11px] 
+        
+        md:w-auto md:px-10 md:py-3 md:text-sm
+        
+        bg-[#1e56a0] text-white font-bold uppercase tracking-wider 
+        hover:bg-[#16427d] transition-all rounded-sm shadow-md active:scale-95 whitespace-nowrap
+      "
+          >
+            Search
+          </button>
+        </div>
       </div>
     </div>
   );
