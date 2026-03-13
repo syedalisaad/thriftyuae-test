@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Calendar } from "lucide-react";
 import { InputField } from "./InputField";
+import { CityLocation } from "../lib/types/booking";
 
 interface Props {
   onBack: () => void;
@@ -12,6 +13,25 @@ interface Props {
 export default function BookingDeliveryForm({ onBack, activeTab }: Props) {
   const [returnType, setReturnType] = useState("collection");
   const [returnLocation, setReturnLocation] = useState("same");
+  const [locationData, setLocationData] = useState<CityLocation[]>([]);
+  const [deliveryCity, setDeliveryCity] = useState("");
+  const [collectionCity, setCollectionCity] = useState("");
+  const [dropOffCity, setDropOffCity] = useState("");
+const getAreas = (cityName: string) => 
+    locationData.find(l => l.city === cityName)?.areas || [];
+
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const res = await fetch('/api/v1/locations');
+        const json = await res.json();
+        if (json.success) setLocationData(json.data);
+      } catch (err) {
+        console.error("API Error:", err);
+      }
+    };
+    fetchLocations();
+  }, []);
 
   return (
     <div className="max-w-6xl mx-auto p-6 rounded-lg font-sans ">
@@ -36,10 +56,11 @@ export default function BookingDeliveryForm({ onBack, activeTab }: Props) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <InputField
-              field={{ label: "Delivery City", type: "select", required: true }}
+              field={{ label: "Delivery City", type: "select", required: true,options: locationData.map(l => l.city),
+                onChange: (e: any) => setDeliveryCity(e.target.value) }}
             />
             <InputField
-              field={{ label: "Delivery Area", type: "select", required: true }}
+              field={{ label: "Delivery Area", type: "select", required: true,options: getAreas(deliveryCity) }}
             />
           </div>
           <InputField
@@ -163,6 +184,9 @@ export default function BookingDeliveryForm({ onBack, activeTab }: Props) {
                             label: "Collection City",
                             type: "select",
                             required: true,
+                            name: "collection_city",
+                            options: locationData.map(l => l.city),
+                            onChange: (e: any) => setCollectionCity(e.target.value)
                           }}
                         />
                         <InputField
@@ -170,6 +194,9 @@ export default function BookingDeliveryForm({ onBack, activeTab }: Props) {
                             label: "Collection Area",
                             type: "select",
                             required: true,
+                            name: "collection_area",
+                            options: getAreas(collectionCity)
+                            
                           }}
                         />
                       </div>
@@ -214,14 +241,19 @@ export default function BookingDeliveryForm({ onBack, activeTab }: Props) {
                     field={{
                       label: "Drop Off City",
                       type: "select",
+                      name: "drop_off_city",
                       required: false,
+                      options: locationData.map(l => l.city),
+                      onChange: (e: any) => setDropOffCity(e.target.value)
                     }}
                   />
                   <InputField
                     field={{
                       label: "Drop Off Location",
                       type: "select",
+                      name: "drop_off_location",
                       required: false,
+                      options: getAreas(dropOffCity)
                     }}
                   />
                   <InputField
